@@ -231,7 +231,243 @@ Past work includes 800,000+ EV charging station records, 10,000+ e-commerce list
         </div>
       </div>
     </section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Value Calculator</title>
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --panel: #0f1720;
+            --text: #e6eef8;
+            --muted: #9aa6bd;
+            --primary: #7c5cff;
+            --accent: #00d4ff;
+            --radius: 12px;
+            --gap: 18px;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f6f8fb;
+                --panel: #fff;
+                --text: #0b1220;
+                --muted: #5b6b7f;
+                --primary: #5b21b6;
+            }
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calculator-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .calculator {
+            background: var(--panel);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid color-mix(in oklab, var(--muted), transparent 82%);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,.45);
+        }
+        
+        .calculator h2 {
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .calculator > p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .calc-input-group {
+            margin-bottom: 15px;
+        }
+        
+        .calc-input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid color-mix(in oklab, var(--muted), transparent 70%);
+            background: color-mix(in oklab, var(--panel), black 5%);
+            color: var(--text);
+            font-size: 16px;
+        }
+        
+        .calc-results {
+            background: color-mix(in oklab, var(--primary), transparent 90%);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-top: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .calc-results h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .calc-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid color-mix(in oklab, var(--muted), transparent 80%);
+        }
+        
+        .calc-result-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--accent);
+        }
+        
+        .calc-btn {
+            background: linear-gradient(180deg, var(--primary), color-mix(in oklab, var(--primary), transparent 20%));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .calc-btn:hover {
+            background: linear-gradient(180deg, color-mix(in oklab, var(--primary), black 10%), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator">
+            <h2><span style="font-size:1.3em;">📊</span> Lead Value Calculator</h2>
+            <p>Calculate the potential ROI of your lead generation project</p>
+            
+            <div class="calculator-grid">
+                <div class="calc-input-group">
+                    <label for="leadCount">Number of Leads Needed</label>
+                    <input type="number" id="leadCount" class="calc-input" min="100" value="1000" step="100">
+                </div>
+                
+                <div class="calc-input-group">
+                    <label for="conversionRate">Estimated Conversion Rate (%)</label>
+                    <input type="number" id="conversionRate" class="calc-input" min="0.1" max="50" value="2" step="0.1">
+                </div>
+                
+                <div class="calc-input-group">
+                    <label for="averageValue">Average Customer Value ($)</label>
+                    <input type="number" id="averageValue" class="calc-input" min="10" value="500" step="10">
+                </div>
+                
+                <div class="calc-input-group">
+                    <label for="projectCost">Estimated Project Cost ($)</label>
+                    <input type="number" id="projectCost" class="calc-input" min="50" value="750" step="50">
+                </div>
+            </div>
+            
+            <button class="calc-btn" onclick="calculateROI()">Calculate ROI</button>
+            
+            <div class="calc-results" id="resultsContainer">
+                <h4>Projected Results</h4>
+                <div class="calc-result-item">
+                    <span>Potential Customers:</span>
+                    <span id="potentialCustomers">20</span>
+                </div>
+                <div class="calc-result-item">
+                    <span>Potential Revenue:</span>
+                    <span id="potentialRevenue">$10,000</span>
+                </div>
+                <div class="calc-result-item">
+                    <span>Return on Investment:</span>
+                    <span id="roiPercentage">1233.3%</span>
+                </div>
+                <div class="calc-result-item">
+                    <span>Net Profit Potential:</span>
+                    <span id="netProfit">$9,250</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        function calculateROI() {
+            const leadCount = parseInt(document.getElementById('leadCount').value) || 0;
+            const conversionRate = parseFloat(document.getElementById('conversionRate').value) || 0;
+            const averageValue = parseFloat(document.getElementById('averageValue').value) || 0;
+            const projectCost = parseFloat(document.getElementById('projectCost').value) || 0;
+            
+            // Calculate results
+            const potentialCustomers = Math.round(leadCount * (conversionRate / 100));
+            const potentialRevenue = potentialCustomers * averageValue;
+            const netProfit = potentialRevenue - projectCost;
+            const roiPercentage = projectCost > 0 ? ((netProfit / projectCost) * 100).toFixed(1) : 0;
+            
+            // Update results
+            document.getElementById('potentialCustomers').textContent = potentialCustomers.toLocaleString();
+            document.getElementById('potentialRevenue').textContent = '$' + potentialRevenue.toLocaleString();
+            document.getElementById('roiPercentage').textContent = roiPercentage + '%';
+            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString();
+        }
+        
+        // Initialize calculator with default values
+        calculateROI();
+        
+        // Add event listeners to recalculate when inputs change
+        document.getElementById('leadCount').addEventListener('input', calculateROI);
+        document.getElementById('conversionRate').addEventListener('input', calculateROI);
+        document.getElementById('averageValue').addEventListener('input', calculateROI);
+        document.getElementById('projectCost').addEventListener('input', calculateROI);
+    </script>
+</body>
+</html>
     <!-- Work -->
     <section id="work" aria-labelledby="work-h">
       <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">

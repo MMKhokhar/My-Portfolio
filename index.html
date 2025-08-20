@@ -1,742 +1,370 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Muhammad M Python Web Scraping & Lead Gen | Google Maps | LinkedIn | E-commerce</title>
-  <meta name="description" content="Muhammad Lead generation, web scraping, data mining and Python automation specialist. Upwork & Fiverr focused portfolio." /> 
-  <style>
-    /* ===== Design tokens & reset ===== */
-    :root{
-      --bg:#0b0c10; --panel:#0f1720; --text:#e6eef8; --muted:#9aa6bd;
-      --primary:#7c5cff; --accent:#00d4ff; --radius:12px; --gap:18px;
-      --nav-h:68px; --maxw:1100px;
-    }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f8fb; --panel:#fff; --text:#0b1220; --muted:#5b6b7f; --primary:#5b21b6; }
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(900px 500px at 85% -10%, color-mix(in oklab,var(--primary),transparent 78%), transparent), var(--bg);
-      color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased;
-    }
-    .container{max-width:var(--maxw);margin:0 auto;padding:24px}
-    header{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg),transparent 6%);backdrop-filter:blur(6px);border-bottom:1px solid color-mix(in oklab,var(--muted),transparent 82%)}
-    .nav{height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;display:grid;place-items:center;flex:0 0 56px}
-    .brand .logo img{width:100%;height:100%;object-fit:contain}
-    .brand .title{font-weight:800;letter-spacing:.4px}
-    nav ul{display:flex;gap:14px;list-style:none;padding:0;margin:0}
-    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-weight:700}
-    nav a.active, nav a:hover{color:var(--text);background:color-mix(in oklab,var(--panel),transparent 10%)}
-    .nav-actions{display:flex;align-items:center;gap:10px}
-    .theme-toggle, .cta{border:0;background:transparent;color:var(--text);cursor:pointer;padding:8px;border-radius:10px}
-    .cta{background:linear-gradient(180deg,var(--primary),color-mix(in oklab,var(--primary),transparent 20%));color:white;font-weight:800;padding:10px 14px}
-    .hamburger{display:none; width:46px;height:46px;border-radius:10px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);display:grid;place-items:center;cursor:pointer;background:transparent}
-    /* Hero */
-    .hero{padding-block:56px 64px}
-    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center}
-    .hero h1{font-size:clamp(1.9rem,3.4vw,2.6rem);margin:0 0 8px}
-    .kicker{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:color-mix(in oklab,var(--primary),transparent 85%);color:color-mix(in oklab,var(--text),transparent 32%);font-weight:700;margin-bottom:12px}
-    .lead{color:var(--muted);margin-bottom:18px}
-    .btn-row{display:flex;gap:12px;flex-wrap:wrap}
-    .card{background:var(--panel);border-radius:var(--radius);padding:18px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);box-shadow:0 10px 30px -10px rgba(0,0,0,.45)}
-    /* Right column */
-    .profile{display:grid;gap:12px;align-items:center;text-align:center}
-    .profile .avatar{width:220px;height:220px;border-radius:16px;overflow:hidden;margin-inline:auto;border:1px solid color-mix(in oklab,var(--muted),transparent 85%)}
-    .profile h3{margin:0}
-    .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-    .chip{padding:.4rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--primary),transparent 85%);font-weight:700;font-size:.9rem}
-    /* Sections */
-    section{padding-block:48px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .services .item{display:flex;gap:12px;align-items:flex-start}
-    .services .icon{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,color-mix(in oklab,var(--primary),white 8%),var(--primary));color:white;font-weight:800}
-    /* Testimonials */
-    .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .quote{font-style:normal}
-    /* Contact */
-    form{display:grid;gap:10px}
-    input,textarea,select{padding:10px;border-radius:8px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);background:transparent;color:var(--text);outline:none}
-    input:focus,textarea:focus,select:focus{box-shadow:0 0 0 6px color-mix(in oklab,var(--primary),transparent 90%);border-color:var(--primary)}
-    .inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    /* Footer */
-    footer{padding:22px 0;border-top:1px solid color-mix(in oklab,var(--muted),transparent 82%);color:var(--muted)}
-    .social{display:flex;gap:10px;align-items:center}
-    .social a{display:inline-grid;place-items:center;width:42px;height:36px;border-radius:8px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);text-decoration:none;color:var(--text)}
-    /* Responsive */
-    @media (max-width:1000px){ .hero-grid{grid-template-columns:1fr} .profile .avatar{width:180px;height:180px} .test-grid{grid-template-columns:repeat(2,1fr)} .grid-3{grid-template-columns:repeat(2,1fr)} }
-    @media (max-width:680px){
-      nav ul{display:none}
-      .hamburger{display:grid}
-      .hero{padding-block:36px}
-      .profile .avatar{width:150px;height:150px}
-      .test-grid{grid-template-columns:1fr}
-      .grid-3{grid-template-columns:1fr}
-      .inline{grid-template-columns:1fr}
-    }
-  </style>
-</head>
-<body>
-  <!-- HEADER -->
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <div class="logo">
-          <img src="Logo.jpg" alt="Muhammad logo" />
-        </div>
-        <div>
-          <div class="title">Muhammad M</div>
-          <div style="font-size:.85rem;color:var(--muted)">Python Web Scraping Expert</div>
-        </div>
-      </div>
-
-      <nav aria-label="Main">
-        <ul>
-          <li><a href="#home" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#work">Past work</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
-        <a class="cta" href="#contact">Hire me</a>
-        <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- REST OF THE CONTENT ... -->
-  <!-- (Truncated here for message length — but I will include the FULL updated file in the next message so nothing is missing.) -->
-  <div class="container" id="home">
-    <section class="hero" aria-label="Hero">
-      <div class="hero-grid">
-        <div>
-          <span class="kicker">Freelance Specialist</span>
-          <h1>Muhammad M - Python Web Scraping & Lead Gen | Google Maps | LinkedIn | E-commerce</h1>
-          <p class="lead" style="text-align: justify;">I provide verified B2B/B2C leads, competitor insights, and market datasets through advanced web scraping, data mining, and automation. Using Python, Selenium, Playwright, and APIs, I extract, clean, and deliver CRM-ready data from Google Maps, Yellow Pages, e-commerce sites, and directories.
-Past work includes 800,000+ EV charging station records, 10,000+ e-commerce listings, and ongoing Google Maps lead campaigns with 5-star client feedback.</p>
-
-          <div class="btn-row" style="margin-bottom:18px">
-            <a class="cta" href="#contact">Get a quote</a>
-            <a class="theme-toggle" href="#work" style="background:transparent;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800">See past work</a>
-          </div>
-
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px">
-            <div class="card" style="display:inline-block">
-              <strong>10+</strong><div style="font-size:.9rem;color:var(--muted)">Profiles reviewed</div>
-            </div>
-            <div class="card" style="display:inline-block">
-              <strong>48 hrs</strong><div style="font-size:.9rem;color:var(--muted)">Avg. kickoff</div>
-            </div>
-            <div class="card" style="display:inline-block">
-              <strong>5★</strong><div style="font-size:.9rem;color:var(--muted)">Client rating</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="chip">Upwork · Fiverr · LinkedIn</div>
-            <div class="chip">YouTube · Instagram · Facebook</div>
-          </div>
-        </div>
-
-        <aside class="profile card" aria-hidden="false">
-          <div class="avatar">
-            <img src="Logo.jpg" alt="Muhammad M — avatar" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <h3>Muhammad M</h3>
-          <div style="color:var(--muted);font-weight:700">Researcher & freelance specialist</div>
-          <div class="chips" style="margin-top:8px">
-            <span class="chip">Python</span>
-            <span class="chip">Web Scraping</span>
-            <span class="chip">Data Scraping</span>
-            <span class="chip">Data Mining</span>
-            <span class="chip">Lead Gen</span>
-            <span class="chip">Data Cleaning</span>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" aria-labelledby="about-h">
-      <div>
-        <h2 id="about-h">About</h2>
-        <p style="color:var(--muted); text-align: justify;">I’m a data-driven freelancer specializing in web scraping, lead generation, and market research. With expertise in Python, Selenium, Playwright, Scrapy, and API integration, I help businesses access clean, verified, and actionable data that drives growth and informs decision-making. Over the past few years, I’ve delivered projects ranging from large-scale datasets (800,000+ EV charging stations) to e-commerce product listings and weekly Google Maps lead campaigns, all tailored to client needs. My focus is on accuracy, compliance, and fast delivery, ensuring every dataset is deduplicated, validated, and ready for CRM or analysis. Whether you need B2B/B2C leads, competitor insights, or custom data pipelines, I provide reliable solutions designed for real business impact.</p>
-      </div>
-    </section>
-
-    <!-- Services -->
-    <section id="services" aria-labelledby="services-h">
-      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">
-        <div>
-          <div style="color:var(--accent);font-weight:800">Services</div>
-          <h2 id="services-h">What I offer</h2>
-        </div>
-      </div>
-
-      <div class="grid-4 services">
-        <div class="card item">
-          <div class="icon">⚡</div>
-          <div>
-            <h3>Lead generation</h3>
-            <p style="color:var(--muted)">Qualified leads from niche directories, LinkedIn, and trade sites, cleaned and ready for outreach.</p>
-          </div>
-        </div>
-
-        <div class="card item">
-          <div class="icon">🕸️</div>
-          <div>
-            <h3>Web scraping</h3>
-            <p style="color:var(--muted)">Resilient scrapers with pagination, proxy support, and reliable selectors for stable data extraction.</p>
-          </div>
-        </div>
-
-        <div class="card item">
-          <div class="icon">🤖</div>
-          <div>
-            <h3>Python automation</h3>
-            <p style="color:var(--muted)">Scripts, ETL pipelines, and small automations to move data into Google Sheets, Airtable, or CRMs.</p>
-          </div>
-        </div>
-
-        <div class="card item">
-          <div class="icon">💼</div>
-          <div>
-            <h3>LinkedIn Profile Optimization</h3>
-            <p style="color:var(--muted)">LinkedIn profile optimization, keyword-rich headlines, content strategy, and visibility boosting.</p>
-          </div>
-        </div>
-
-        <div class="card item">
-          <div class="icon">🎬</div>
-          <div>
-            <h3>YouTube Channel Optimization</h3>
-            <p style="color:var(--muted)">Channel setup, SEO-friendly titles/descriptions, thumbnail guidance, and growth strategy for better reach.</p>
-          </div>
-        </div>
-
-        <div class="card item">
-          <div class="icon">🌐</div>
-          <div>
-            <h3>Portfolio Web Development</h3>
-            <p style="color:var(--muted)">Modern, responsive portfolio websites showcasing your work, skills, and services to attract clients.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Value Calculator</title>
-    <style>
-        :root {
-            --bg: #0b0c10;
-            --panel: #0f1720;
-            --text: #e6eef8;
-            --muted: #9aa6bd;
-            --primary: #7c5cff;
-            --accent: #00d4ff;
-            --radius: 12px;
-            --gap: 18px;
-        }
-        
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg: #f6f8fb;
-                --panel: #fff;
-                --text: #0b1220;
-                --muted: #5b6b7f;
-                --primary: #5b21b6;
-            }
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .calculator-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .calculator {
-            background: var(--panel);
-            border-radius: var(--radius);
-            padding: 24px;
-            border: 1px solid color-mix(in oklab, var(--muted), transparent 82%);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,.45);
-        }
-        
-        .calculator h2 {
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .calculator > p {
-            color: var(--muted);
-            margin-bottom: 20px;
-        }
-        
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 20px 0;
-        }
-        
-        .calc-input-group {
-            margin-bottom: 15px;
-        }
-        
-        .calc-input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        .calc-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid color-mix(in oklab, var(--muted), transparent 70%);
-            background: color-mix(in oklab, var(--panel), black 5%);
-            color: var(--text);
-            font-size: 16px;
-        }
-        
-        .calc-results {
-            background: color-mix(in oklab, var(--primary), transparent 90%);
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-top: 20px;
-            border-left: 4px solid var(--primary);
-        }
-        
-        .calc-results h4 {
-            margin-top: 0;
-            color: var(--primary);
-        }
-        
-        .calc-result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid color-mix(in oklab, var(--muted), transparent 80%);
-        }
-        
-        .calc-result-item:last-child {
-            border-bottom: none;
-            font-weight: 700;
-            font-size: 1.1em;
-            color: var(--accent);
-        }
-        
-        .calc-btn {
-            background: linear-gradient(180deg, var(--primary), color-mix(in oklab, var(--primary), transparent 20%));
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .calc-btn:hover {
-            background: linear-gradient(180deg, color-mix(in oklab, var(--primary), black 10%), var(--primary));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .calculator-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="calculator-container">
-        <div class="calculator">
-            <h2><span style="font-size:1.3em;">📊</span> Lead Value Calculator</h2>
-            <p>Calculate the potential ROI of your lead generation project</p>
-            
-            <div class="calculator-grid">
-                <div class="calc-input-group">
-                    <label for="leadCount">Number of Leads Needed</label>
-                    <input type="number" id="leadCount" class="calc-input" min="100" value="1000" step="100">
-                </div>
-                
-                <div class="calc-input-group">
-                    <label for="conversionRate">Estimated Conversion Rate (%)</label>
-                    <input type="number" id="conversionRate" class="calc-input" min="0.1" max="50" value="2" step="0.1">
-                </div>
-                
-                <div class="calc-input-group">
-                    <label for="averageValue">Average Customer Value ($)</label>
-                    <input type="number" id="averageValue" class="calc-input" min="10" value="500" step="10">
-                </div>
-                
-                <div class="calc-input-group">
-                    <label for="projectCost">Estimated Project Cost ($)</label>
-                    <input type="number" id="projectCost" class="calc-input" min="50" value="750" step="50">
-                </div>
-            </div>
-            
-            <button class="calc-btn" onclick="calculateROI()">Calculate ROI</button>
-            
-            <div class="calc-results" id="resultsContainer">
-                <h4>Projected Results</h4>
-                <div class="calc-result-item">
-                    <span>Potential Customers:</span>
-                    <span id="potentialCustomers">20</span>
-                </div>
-                <div class="calc-result-item">
-                    <span>Potential Revenue:</span>
-                    <span id="potentialRevenue">$10,000</span>
-                </div>
-                <div class="calc-result-item">
-                    <span>Return on Investment:</span>
-                    <span id="roiPercentage">1233.3%</span>
-                </div>
-                <div class="calc-result-item">
-                    <span>Net Profit Potential:</span>
-                    <span id="netProfit">$9,250</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function calculateROI() {
-            const leadCount = parseInt(document.getElementById('leadCount').value) || 0;
-            const conversionRate = parseFloat(document.getElementById('conversionRate').value) || 0;
-            const averageValue = parseFloat(document.getElementById('averageValue').value) || 0;
-            const projectCost = parseFloat(document.getElementById('projectCost').value) || 0;
-            
-            // Calculate results
-            const potentialCustomers = Math.round(leadCount * (conversionRate / 100));
-            const potentialRevenue = potentialCustomers * averageValue;
-            const netProfit = potentialRevenue - projectCost;
-            const roiPercentage = projectCost > 0 ? ((netProfit / projectCost) * 100).toFixed(1) : 0;
-            
-            // Update results
-            document.getElementById('potentialCustomers').textContent = potentialCustomers.toLocaleString();
-            document.getElementById('potentialRevenue').textContent = '$' + potentialRevenue.toLocaleString();
-            document.getElementById('roiPercentage').textContent = roiPercentage + '%';
-            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString();
-        }
-        
-        // Initialize calculator with default values
-        calculateROI();
-        
-        // Add event listeners to recalculate when inputs change
-        document.getElementById('leadCount').addEventListener('input', calculateROI);
-        document.getElementById('conversionRate').addEventListener('input', calculateROI);
-        document.getElementById('averageValue').addEventListener('input', calculateROI);
-        document.getElementById('projectCost').addEventListener('input', calculateROI);
-    </script>
-</body>
-</html>
-    <!-- Work -->
-    <section id="work" aria-labelledby="work-h">
-      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">
-        <div>
-          <div style="color:var(--accent);font-weight:800">Past work</div>
-          <h2 id="work-h">Selected projects</h2>
-        </div>
-      </div>
-
-      <div class="test-grid">
-        <div class="card">
-          <h3>Out-of-network surgeon leads</h3>
-          <p style="color:var(--muted)">Scraped Healthgrades & NPI registry, normalized fields, exported to CSV/CRM-ready format.</p>
-        </div>
-        <div class="card">
-          <h3>EV Charger Location Public Data Collection Across Europe</h3>
-          <p style="color:var(--muted)">Collected public EV charging station data across Europe, coordinates, addresses, connector types, and speeds. Delivered clean CSV files, fully compliant with Upwork’s Terms.
-.</p>
-        </div>
-        <div class="card">
-          <h3>Very Soon</h3>
-          <p style="color:var(--muted)">very soon update this section.</p>
-        </div>
-      </div>
-    </section>
-<!-- Certifications -->
-<section id="certifications" class="container" aria-labelledby="certifications-h">
-  <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">
-    <div>
-      <div style="color:var(--accent);font-weight:800">Certifications</div>
-      <h2 id="certifications-h">Professional Credentials</h2>
-    </div>
-  </div>
-
-  <div class="cert-slider card">
-    <div class="cert-track">
-      <div class="cert-item"><img src="Certi 1.png" alt="Certification 1" /></div>
-      <div class="cert-item"><img src="Certi 2.png" alt="Certification 2" /></div>
-      <div class="cert-item"><img src="Certi 3.png" alt="Certification 3" /></div>
-      <div class="cert-item"><img src="Certi 4.png" alt="Certification 4" /></div>
-      <div class="cert-item"><img src="Certi 5.png" alt="Certification 5" /></div>
-      <div class="cert-item"><img src="Certi 6.png" alt="Certification 6" /></div>
-      <div class="cert-item"><img src="Certi 7.png" alt="Certification 7" /></div>
-      <div class="cert-item"><img src="Certi 8.png" alt="Certification 8" /></div>
-      <div class="cert-item"><img src="Certi 9.png" alt="Certification 9" /></div>
-      <div class="cert-item"><img src="Certi 10.png" alt="Certification 10" /></div>
-      <div class="cert-item"><img src="Certi 11.png" alt="Certification 11" /></div>
-      <div class="cert-item"><img src="Certi 12.png" alt="Certification 12" /></div>
-      <div class="cert-item"><img src="Certi 13.png" alt="Certification 13" /></div>
-      <div class="cert-item"><img src="Certi 14.png" alt="Certification 14" /></div>
-      <div class="cert-item"><img src="Certi 15.png" alt="Certification 1" /></div>
-    </div>
-  </div>
-</section>
-
-<style>
-  .cert-slider {
-    overflow: hidden;
-    position: relative;
-    height: 240px;
-  }
-
-  .cert-track {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .cert-item {
-    flex: 0 0 50%; /* Do item ek sath show hon */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .cert-item img {
-    max-height: 220px;
-    max-width: 90%;
-    border-radius: var(--radius);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-  }
-</style>
-
-<script>
-  // Certification auto slider (2 at a time)
-  const certTrack = document.querySelector('.cert-track');
-  const certItems = document.querySelectorAll('.cert-item');
-  let certIndex = 0;
-
-  setInterval(() => {
-    certIndex = (certIndex + 1) % Math.ceil(certItems.length / 2); // 2 ek sath
-    certTrack.style.transform = `translateX(-${certIndex * 100}%)`;
-  }, 2000);
-</script>
-
-    <!-- Testimonials -->
-    <section aria-labelledby="testimonials-h">
-      <div style="margin-bottom:12px">
-        <div style="color:var(--accent);font-weight:800">Testimonials</div>
-        <h2 id="testimonials-h">Clients Reviews</h2>
-      </div>
-
-      <div class="test-grid">
-        <figure class="card quote">
-          <blockquote>“Can only recommend Muhammad. He delivered top notch data and it wasn't easy to get. Will work with him again for sure.”</blockquote>
-          <figcaption style="color:var(--muted);margin-top:10px"><strong>Client · Upwork</strong></figcaption>
-        </figure>
-
-        <figure class="card quote">
-          <blockquote>“Muhammad is experienced, thorough, and fast. Clean data and great communication.”</blockquote>
-          <figcaption style="color:var(--muted);margin-top:10px"><strong>Client · Fiverr</strong></figcaption>
-        </figure>
-
-        <figure class="card quote">
-          <blockquote>“Conversion-ready lists and clear automation, exactly what we needed.”</blockquote>
-          <figcaption style="color:var(--muted);margin-top:10px"><strong>Startup · Private</strong></figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" aria-labelledby="contact-h">
-      <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap">
-        <div style="flex:1;min-width:280px">
-          <h2 id="contact-h">Contact</h2>
-          <p style="color:var(--muted)">Tell me about your project, what you need, target markets, and timeline.</p>
-
-          <form id="contactForm" class="card" novalidate>
-            <div style="display:grid;gap:10px">
-              <input id="name" name="name" placeholder="Full name" required />
-              <input id="email" name="email" type="email" placeholder="you@company.com" required />
-              <div class="inline">
-                <select id="budget" name="budget" required>
-  <option value="">Budget</option>
-  <option>$50 – $500</option>
-  <option>$500 – $1,500</option>
-  <option>$1,500 – $3,000</option>
-  <option>$3,000 – $5,000</option>
-  <option>Other</option>
-</select>
-                <select id="timeline" name="timeline" required>
-                  <option value="">Timeline</option>
-                  <option>ASAP</option><option>1–4 weeks</option><option>1–3 months</option>
-                </select>
-              </div>
-              <textarea id="message" name="message" rows="5" placeholder="Project details, datasets, target sites..." minlength="20"></textarea>
-              <div style="display:flex;gap:10px;align-items:center">
-                <input type="checkbox" id="subscribe" name="subscribe" />
-                <label for="subscribe" style="color:var(--muted)">Send occasional updates</label>
-              </div>
-              <div style="display:flex;gap:8px;align-items:center">
-                <button type="submit" class="cta">Send message</button>
-                <button type="button" id="dmUpwork" style="background:transparent;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);padding:10px;border-radius:10px;color:var(--text)">View Upwork</button>
-              </div>
-              <div id="formStatus" style="color:var(--muted);display:none"></div>
-            </div>
-          </form>
-        </div>
-
-        <aside class="card" style="min-width:260px;flex:0 0 320px">
-  <h3>Prefer to email?</h3>
-  <p>
-    <a href="mailto:mmofficial0355@gmail.com" style="color:var(--accent);text-decoration:none">
-      mmofficial0355@gmail.com
-    </a>
-  </p>
-
-  <h3 style="margin-top:12px">Available on</h3>
-  <p style="color:var(--muted)">Upwork · Fiverr, typical reply within 1–2 hours.</p>
-
-  <div style="margin-top:12px">
-    <h4 style="margin:0 0 8px">Social</h4>
-    <div class="social" role="list" style="display:flex; gap:10px; align-items:center;">
-      <a href="https://web.facebook.com/MMKhokhar777" aria-label="Facebook" target="_blank">
-        <img src="facebook-icon.png" alt="Facebook" style="width:32px; height:32px;">
-      </a>
-      <a href="https://www.linkedin.com/in/mkhokhar1" aria-label="LinkedIn" target="_blank">
-        <img src="linkedin-icon.png" alt="LinkedIn" style="width:32px; height:32px;">
-      </a>
-    </div>
-  </div>
-</aside>
-
-  <!-- Footer -->
-<footer>
-  <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-    <div>© <span id="year"></span> Muhammad M. All rights reserved.</div>
-    <div style="color:var(--muted)">
-      Made for Upwork & Fiverr • 
-      <a href="#home" style="color:var(--muted);text-decoration:underline">Back to top</a>
-    </div>
-    <div class="social" style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-      <a href="https://www.upwork.com/freelancers/~012f01e0d9f9142683" aria-label="Upwork" target="_blank">
-        <img src="Upwork.png" alt="Upwork" style="width:28px; height:28px;">
-      </a>
-      <a href="https://www.fiverr.com/s/5rEy4b7" aria-label="Fiverr" target="_blank">
-        <img src="Fiverr.png" alt="Fiverr" style="width:28px; height:28px;">
-      </a>
-    </div>
-  </div>
-</footer>
-
-  <script>
-    const qs = s => document.querySelector(s);
-    const qsa = s => Array.from(document.querySelectorAll(s));
-
-    qs('#year').textContent = new Date().getFullYear();
-
-    const root = document.documentElement;
-    const stored = localStorage.getItem('theme');
-    if(stored === 'light') root.classList.add('light');
-
-    qs('#themeToggle').addEventListener('click', () => {
-      const isLight = root.classList.contains('light');
-      if(isLight) { root.classList.remove('light'); localStorage.removeItem('theme'); }
-      else { root.classList.add('light'); localStorage.setItem('theme','light'); }
-    });
-
-    const drawerBtn = qs('#hamburger'), nav = qs('nav ul');
-    drawerBtn.addEventListener('click', () => {
-      nav.style.display = nav.style.display === 'flex' ? '' : 'flex';
-      nav.style.flexDirection = 'column';
-      nav.style.position = 'absolute';
-      nav.style.right = '24px';
-      nav.style.top = '68px';
-      nav.style.background = 'var(--panel)';
-      nav.style.padding = '14px';
-      nav.style.borderRadius = '12px';
-      nav.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,.45)';
-    });
-
-    qsa('nav a').forEach(a => {
-      a.addEventListener('click', () => {
-        qsa('nav a').forEach(x=>x.classList.remove('active'));
-        a.classList.add('active');
-      });
-    });
-
-    const form = qs('#contactForm'), status = qs('#formStatus');
-    const validateEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      status.style.display = 'none';
-      const data = Object.fromEntries(new FormData(form).entries());
-      const errs = [];
-      if(!data.name || data.name.trim().length < 2) errs.push('name');
-      if(!validateEmail(data.email||'')) errs.push('email');
-      if(!data.budget) errs.push('budget');
-      if(!data.timeline) errs.push('timeline');
-      if((data.message||'').trim().length < 20) errs.push('message');
-      if(errs.length){
-        status.style.display = 'block';
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Please complete required fields.';
-        return;
-      }
-      qs('.cta').disabled = true;
-      qs('.cta').textContent = 'Sending…';
-      await new Promise(r=>setTimeout(r,800));
-      qs('.cta').disabled = false;
-      qs('.cta').textContent = 'Send message';
-      status.style.display = 'block';
-      status.style.color = 'var(--muted)';
-      status.textContent = 'Thanks — I will reply within 24–48 hours.';
-      form.reset();
-    });
-
-    qs('#dmUpwork').addEventListener('click', () => {
-      window.open('https://www.upwork.com/freelancers/~012f01e0d9f9142683', '_blank');
-    });
-  </script>
-</body>
-</html>
+<!doctype html>  
+<html lang="en">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width,initial-scale=1" />  
+  <title>Muhammad M Python Web Scraping & Lead Gen | Google Maps | LinkedIn | E-commerce</title>  
+  <meta name="description" content="Muhammad Lead generation, web scraping, data mining and Python automation specialist. Upwork & Fiverr focused portfolio." />   
+  <style>  
+    /* ===== Design tokens & reset ===== */  
+    :root{  
+      --bg:#0b0c10; --panel:#0f1720; --text:#e6eef8; --muted:#9aa6bd;  
+      --primary:#7c5cff; --accent:#00d4ff; --radius:12px; --gap:18px;  
+      --nav-h:68px; --maxw:1100px;  
+    }  
+    @media (prefers-color-scheme: light){  
+      :root{ --bg:#f6f8fb; --panel:#fff; --text:#0b1220; --muted:#5b6b7f; --primary:#5b21b6; }  
+    }  
+    *{box-sizing:border-box}  
+    html,body{height:100%}  
+    body{  
+      margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;  
+      background: radial-gradient(900px 500px at 85% -10%, color-mix(in oklab,var(--primary),transparent 78%), transparent), var(--bg);  
+      color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased;  
+    }  
+    .container{max-width:var(--maxw);margin:0 auto;padding:24px}  
+    header{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg),transparent 6%);backdrop-filter:blur(6px);border-bottom:1px solid color-mix(in oklab,var(--muted),transparent 82%)}  
+    .nav{height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;gap:12px}  
+    .brand{display:flex;align-items:center;gap:12px}  
+    .brand .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;display:grid;place-items:center;flex:0 0 56px}  
+    .brand .logo img{width:100%;height:100%;object-fit:contain}  
+    .brand .title{font-weight:800;letter-spacing:.4px}  
+    nav ul{display:flex;gap:14px;list-style:none;padding:0;margin:0}  
+    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-weight:700}  
+    nav a.active, nav a:hover{color:var(--text);background:color-mix(in oklab,var(--panel),transparent 10%)}  
+    .nav-actions{display:flex;align-items:center;gap:10px}  
+    .theme-toggle, .cta{border:0;background:transparent;color:var(--text);cursor:pointer;padding:8px;border-radius:10px}  
+    .cta{background:linear-gradient(180deg,var(--primary),color-mix(in oklab,var(--primary),transparent 20%));color:white;font-weight:800;padding:10px 14px}  
+    .hamburger{display:none; width:46px;height:46px;border-radius:10px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);display:grid;place-items:center;cursor:pointer;background:transparent}  
+    /* Hero */  
+    .hero{padding-block:56px 64px}  
+    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center}  
+    .hero h1{font-size:clamp(1.9rem,3.4vw,2.6rem);margin:0 0 8px}  
+    .kicker{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:color-mix(in oklab,var(--primary),transparent 85%);color:color-mix(in oklab,var(--text),transparent 32%);font-weight:700;margin-bottom:12px}  
+    .lead{color:var(--muted);margin-bottom:18px}  
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap}  
+    .card{background:var(--panel);border-radius:var(--radius);padding:18px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);box-shadow:0 10px 30px -10px rgba(0,0,0,.45)}  
+    /* Right column */  
+    .profile{display:grid;gap:12px;align-items:center;text-align:center}  
+    .profile .avatar{width:220px;height:220px;border-radius:16px;overflow:hidden;margin-inline:auto;border:1px solid color-mix(in oklab,var(--muted),transparent 85%)}  
+    .profile h3{margin:0}  
+    .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}  
+    .chip{padding:.4rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--primary),transparent 85%);font-weight:700;font-size:.9rem}  
+    /* Sections */  
+    section{padding-block:48px}  
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}  
+    .services .item{display:flex;gap:12px;align-items:flex-start}  
+    .services .icon{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,color-mix(in oklab,var(--primary),white 8%),var(--primary));color:white;font-weight:800}  
+    /* Testimonials */  
+    .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}  
+    .quote{font-style:normal}  
+    /* Contact */  
+    form{display:grid;gap:10px}  
+    input,textarea,select{padding:10px;border-radius:8px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);background:transparent;color:var(--text);outline:none}  
+    input:focus,textarea:focus,select:focus{box-shadow:0 0 0 6px color-mix(in oklab,var(--primary),transparent 90%);border-color:var(--primary)}  
+    .inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}  
+    /* Footer */  
+    footer{padding:22px 0;border-top:1px solid color-mix(in oklab,var(--muted),transparent 82%);color:var(--muted)}  
+    .social{display:flex;gap:10px;align-items:center}  
+    .social a{display:inline-grid;place-items:center;width:42px;height:36px;border-radius:8px;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);text-decoration:none;color:var(--text)}  
+    /* Responsive */  
+    @media (max-width:1000px){ .hero-grid{grid-template-columns:1fr} .profile .avatar{width:180px;height:180px} .test-grid{grid-template-columns:repeat(2,1fr)} .grid-3{grid-template-columns:repeat(2,1fr)} }  
+    @media (max-width:680px){  
+      nav ul{display:none}  
+      .hamburger{display:grid}  
+      .hero{padding-block:36px}  
+      .profile .avatar{width:150px;height:150px}  
+      .test-grid{grid-template-columns:1fr}  
+      .grid-3{grid-template-columns:1fr}  
+      .inline{grid-template-columns:1fr}  
+    }  
+  </style>  
+</head>  
+<body>  
+  <!-- HEADER -->  
+  <header>  
+    <div class="container nav">  
+      <div class="brand">  
+        <div class="logo">  
+          <img src="Logo.jpg" alt="Muhammad logo" />  
+        </div>  
+        <div>  
+          <div class="title">Muhammad M</div>  
+          <div style="font-size:.85rem;color:var(--muted)">Python Web Scraping Expert</div>  
+        </div>  
+      </div>  
+  
+      <nav aria-label="Main">  
+        <ul>  
+          <li><a href="#home" class="active">Home</a></li>  
+          <li><a href="#about">About</a></li>  
+          <li><a href="#services">Services</a></li>  
+          <li><a href="#work">Past work</a></li>  
+          <li><a href="#contact">Contact</a></li>  
+        </ul>  
+      </nav>  
+  
+      <div class="nav-actions">  
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>  
+        <a class="cta" href="#contact">Hire me</a>  
+        <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>  
+      </div>  
+    </div>  
+  </header>  
+  
+  <!-- REST OF THE CONTENT ... -->  
+  <!-- (Truncated here for message length — but I will include the FULL updated file in the next message so nothing is missing.) -->  
+  <div class="container" id="home">  
+    <section class="hero" aria-label="Hero">  
+      <div class="hero-grid">  
+        <div>  
+          <span class="kicker">Freelance Specialist</span>  
+          <h1>Muhammad M - Python Web Scraping & Lead Gen | Google Maps | LinkedIn | E-commerce</h1>  
+          <p class="lead" style="text-align: justify;">I provide verified B2B/B2C leads, competitor insights, and market datasets through advanced web scraping, data mining, and automation. Using Python, Selenium, Playwright, and APIs, I extract, clean, and deliver CRM-ready data from Google Maps, Yellow Pages, e-commerce sites, and directories.  
+Past work includes 800,000+ EV charging station records, 10,000+ e-commerce listings, and ongoing Google Maps lead campaigns with 5-star client feedback.</p>  
+  
+          <div class="btn-row" style="margin-bottom:18px">  
+            <a class="cta" href="#contact">Get a quote</a>  
+            <a class="theme-toggle" href="#work" style="background:transparent;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800">See past work</a>  
+          </div>  
+  
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px">  
+            <div class="card" style="display:inline-block">  
+              <strong>10+</strong><div style="font-size:.9rem;color:var(--muted)">Profiles reviewed</div>  
+            </div>  
+            <div class="card" style="display:inline-block">  
+              <strong>48 hrs</strong><div style="font-size:.9rem;color:var(--muted)">Avg. kickoff</div>  
+            </div>  
+            <div class="card" style="display:inline-block">  
+              <strong>5★</strong><div style="font-size:.9rem;color:var(--muted)">Client rating</div>  
+            </div>  
+          </div>  
+  
+          <div style="display:flex;gap:10px;align-items:center">  
+            <div class="chip">Upwork · Fiverr · LinkedIn</div>  
+            <div class="chip">YouTube · Instagram · Facebook</div>  
+          </div>  
+        </div>  
+  
+        <aside class="profile card" aria-hidden="false">  
+          <div class="avatar">  
+            <img src="Logo.jpg" alt="Muhammad M — avatar" style="width:100%;height:100%;object-fit:cover" />  
+          </div>  
+          <h3>Muhammad M</h3>  
+          <div style="color:var(--muted);font-weight:700">Researcher & freelance specialist</div>  
+          <div class="chips" style="margin-top:8px">  
+            <span class="chip">Python</span>  
+            <span class="chip">Web Scraping</span>  
+            <span class="chip">Data Scraping</span>  
+            <span class="chip">Data Mining</span>  
+            <span class="chip">Lead Gen</span>  
+            <span class="chip">Data Cleaning</span>  
+          </div>  
+        </aside>  
+      </div>  
+    </section>  
+  
+    <!-- About -->  
+    <section id="about" aria-labelledby="about-h">  
+      <div>  
+        <h2 id="about-h">About</h2>  
+        <p style="color:var(--muted); text-align: justify;">I’m a data-driven freelancer specializing in web scraping, lead generation, and market research. With expertise in Python, Selenium, Playwright, Scrapy, and API integration, I help businesses access clean, verified, and actionable data that drives growth and informs decision-making. Over the past few years, I’ve delivered projects ranging from large-scale datasets (800,000+ EV charging stations) to e-commerce product listings and weekly Google Maps lead campaigns, all tailored to client needs. My focus is on accuracy, compliance, and fast delivery, ensuring every dataset is deduplicated, validated, and ready for CRM or analysis. Whether you need B2B/B2C leads, competitor insights, or custom data pipelines, I provide reliable solutions designed for real business impact.</p>  
+      </div>  
+    </section>  
+  
+    <!-- Services -->  
+    <section id="services" aria-labelledby="services-h">  
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">  
+        <div>  
+          <div style="color:var(--accent);font-weight:800">Services</div>  
+          <h2 id="services-h">What I offer</h2>  
+        </div>  
+      </div>  
+  
+      <div class="grid-4 services">  
+        <div class="card item">  
+          <div class="icon">⚡</div>  
+          <div>  
+            <h3>Lead generation</h3>  
+            <p style="color:var(--muted)">Qualified leads from niche directories, LinkedIn, and trade sites, cleaned and ready for outreach.</p>  
+          </div>  
+        </div>  
+  
+        <div class="card item">  
+          <div class="icon">🕸️</div>  
+          <div>  
+            <h3>Web scraping</h3>  
+            <p style="color:var(--muted)">Resilient scrapers with pagination, proxy support, and reliable selectors for stable data extraction.</p>  
+          </div>  
+        </div>  
+  
+        <div class="card item">  
+          <div class="icon">🤖</div>  
+          <div>  
+            <h3>Python automation</h3>  
+            <p style="color:var(--muted)">Scripts, ETL pipelines, and small automations to move data into Google Sheets, Airtable, or CRMs.</p>  
+          </div>  
+        </div>  
+  
+        <div class="card item">  
+          <div class="icon">💼</div>  
+          <div>  
+            <h3>LinkedIn Profile Optimization</h3>  
+            <p style="color:var(--muted)">LinkedIn profile optimization, keyword-rich headlines, content strategy, and visibility boosting.</p>  
+          </div>  
+        </div>  
+  
+        <div class="card item">  
+          <div class="icon">🎬</div>  
+          <div>  
+            <h3>YouTube Channel Optimization</h3>  
+            <p style="color:var(--muted)">Channel setup, SEO-friendly titles/descriptions, thumbnail guidance, and growth strategy for better reach.</p>  
+          </div>  
+        </div>  
+  
+        <div class="card item">  
+          <div class="icon">🌐</div>  
+          <div>  
+            <h3>Portfolio Web Development</h3>  
+            <p style="color:var(--muted)">Modern, responsive portfolio websites showcasing your work, skills, and services to attract clients.</p>  
+          </div>  
+        </div>  
+      </div>  
+    </section>  
+  
+    <!-- Work -->  
+    <section id="work" aria-labelledby="work-h">  
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">  
+        <div>  
+          <div style="color:var(--accent);font-weight:800">Past work</div>  
+          <h2 id="work-h">Selected projects</h2>  
+        </div>  
+      </div>  
+  
+      <div class="test-grid">  
+        <div class="card">  
+          <h3>Out-of-network surgeon leads</h3>  
+          <p style="color:var(--muted)">Scraped Healthgrades & NPI registry, normalized fields, exported to CSV/CRM-ready format.</p>  
+        </div>  
+        <div class="card">  
+          <h3>EV Charger Location Public Data Collection Across Europe</h3>  
+          <p style="color:var(--muted)">Collected public EV charging station data across Europe, coordinates, addresses, connector types, and speeds. Delivered clean CSV files, fully compliant with Upwork’s Terms.  
+.</p>  
+        </div>  
+        <div class="card">  
+          <h3>Very Soon</h3>  
+          <p style="color:var(--muted)">very soon update this section.</p>  
+        </div>  
+      </div>  
+    </section>  
+<!-- Certifications -->  
+<section id="certifications" class="container" aria-labelledby="certifications-h">  
+  <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:12px">  
+    <div>  
+      <div style="color:var(--accent);font-weight:800">Certifications</div>  
+      <h2 id="certifications-h">Professional Credentials</h2>  
+    </div>  
+  </div>  
+  
+  <div class="cert-slider card">  
+    <div class="cert-track">  
+      <div class="cert-item"><img src="Certi 1.png" alt="Certification 1" /></div>  
+      <div class="cert-item"><img src="Certi 2.png" alt="Certification 2" /></div>  
+      <div class="cert-item"><img src="Certi 3.png" alt="Certification 3" /></div>  
+      <div class="cert-item"><img src="Certi 4.png" alt="Certification 4" /></div>  
+      <div class="cert-item"><img src="Certi 5.png" alt="Certification 5" /></div>  
+      <div class="cert-item"><img src="Certi 6.png" alt="Certification 6" /></div>  
+      <div class="cert-item"><img src="Certi 7.png" alt="Certification 7" /></div>  
+      <div class="cert-item"><img src="Certi 8.png" alt="Certification 8" /></div>  
+      <div class="cert-item"><img src="Certi 9.png" alt="Certification 9" /></div>  
+      <div class="cert-item"><img src="Certi 10.png" alt="Certification 10" /></div>  
+      <div class="cert-item"><img src="Certi 11.png" alt="Certification 11" /></div>  
+      <div class="cert-item"><img src="Certi 12.png" alt="Certification 12" /></div>  
+      <div class="cert-item"><img src="Certi 13.png" alt="Certification 13" /></div>  
+      <div class="cert-item"><img src="Certi 14.png" alt="Certification 14" /></div>  
+      <div class="cert-item"><img src="Certi 15.png" alt="Certification 1" /></div>  
+    </div>  
+  </div>  
+</section>  
+  
+<style>  
+  .cert-slider {  
+    overflow: hidden;  
+    position: relative;  
+    height: 240px;  
+  }  
+  
+  .cert-track {  
+    display: flex;  
+    transition: transform 0.5s ease-in-out;  
+  }  
+  
+  .cert-item {  
+    flex: 0 0 50%; /* Do item ek sath show hon */  
+    display: flex;  
+    justify-content: center;  
+    align-items: center;  
+  }  
+  
+  .cert-item img {  
+    max-height: 220px;  
+    max-width: 90%;  
+    border-radius: var(--radius);  
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);  
+  }  
+</style>  
+  
+<script>  
+  // Certification auto slider (2 at a time)  
+  const certTrack = document.querySelector('.cert-track');  
+  const certItems = document.querySelectorAll('.cert-item');  
+  let certIndex = 0;  
+  
+  setInterval(() => {  
+    certIndex = (certIndex + 1) % Math.ceil(certItems.length / 2); // 2 ek sath  
+    certTrack.style.transform = `translateX(-${certIndex * 100}%)`;  
+  }, 2000);  
+</script>  
+  
+    <!-- Testimonials -->  
+    <section aria-labelledby="testimonials-h">  
+      <div style="margin-bottom:12px">  
+        <div style="color:var(--accent);font-weight:800">Testimonials</div>  
+        <h2 id="testimonials-h">Clients Reviews</h2>  
+      </div>  
+  
+      <div class="test-grid">  
+        <figure class="card quote">  
+          <blockquote>“Can only recommend Muhammad. He delivered top notch data and it wasn't easy to get. Will work with him again for sure.”</blockquote>  
+          <figcaption style="color:var(--muted);margin-top:10px"><strong>Client · Upwork</strong></figcaption>  
+        </figure>  
+  
+        <figure class="card quote">  
+          <blockquote>“Muhammad is experienced, thorough, and fast. Clean data and great communication.”</blockquote>  
+          <figcaption style="color:var(--muted);margin-top:10px"><strong>Client · Fiverr</strong></figcaption>  
+        </figure>  
+  
+        <figure class="card quote">  
+          <blockquote>“Conversion-ready lists and clear automation, exactly what we needed.”</blockquote>  
+          <figcaption style="color:var(--muted);margin-top:10px"><strong>Startup · Private</strong></figcaption>  
+        </figure>  
+      </div>  
+    </section>  
+  
+    <!-- Contact -->  
+    <section id="contact" aria-labelledby="contact-h">  
+      <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap">  
+        <div style="flex:1;min-width:280px">  
+          <h2 id="contact-h">Contact</h2>  
+          <p style="color:var(--muted)">Tell me about your project, what you need, target markets, and timeline.</p>  
+  
+          <form id="contactForm" class="card" novalidate>  
+            <div style="display:grid;gap:10px">  
+              <input id="name" name="name" placeholder="Full name" required />  
+              <input id="email" name="email" type="email" placeholder="you@company.com" required />  
+              <div class="inline">  
+                <select id="budget" name="budget" required>  
+  <option value="">Budget</option>  
+  <option>$50 – $500</option>  
+  <option>$500 – $1,500</option>  
+  <option>$1,500 – $3,000</o

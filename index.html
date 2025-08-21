@@ -442,13 +442,18 @@ calculateROI();
         Tell me about your project, what you need, target markets, and timeline.
       </p>
 
-      <!-- Formspree-integrated form -->
+      <!-- ✅ Fixed Formspree-integrated form -->
       <form id="contactForm" class="card" action="https://formspree.io/f/mdkdqnka" method="POST" novalidate>
         <div style="display:grid;gap:10px">
-          <input id="name" name="name" placeholder="Full name" required />
+
+          <!-- Full Name -->
+          <input id="name" name="name" type="text" placeholder="Full name" required />
+
+          <!-- Email -->
           <input id="email" name="email" type="email" placeholder="you@company.com" required />
-          
-          <div class="inline">
+
+          <!-- Budget & Timeline -->
+          <div class="inline" style="display:flex;gap:10px;flex-wrap:wrap">
             <select id="budget" name="budget" required>
               <option value="">Budget</option>
               <option value="$50 – $500">$50 – $500</option>
@@ -457,6 +462,7 @@ calculateROI();
               <option value="$3,000 – $5,000">$3,000 – $5,000</option>
               <option value="Other">Other</option>
             </select>
+
             <select id="timeline" name="timeline" required>
               <option value="">Timeline</option>
               <option value="ASAP">ASAP</option>
@@ -465,27 +471,32 @@ calculateROI();
             </select>
           </div>
           
+          <!-- Project Details -->
           <textarea id="message" name="message" rows="5" placeholder="Project details, datasets, target sites..." minlength="20" required></textarea>
           
+          <!-- Updates Checkbox -->
           <div style="display:flex;gap:10px;align-items:center">
-            <input type="checkbox" id="subscribe" name="subscribe" />
+            <input type="checkbox" id="subscribe" name="subscribe" value="Yes" />
             <label for="subscribe" style="color:var(--muted)">Send occasional updates</label>
           </div>
 
-          <!-- Honeypot for spam bots -->
+          <!-- Honeypot (spam protection) -->
           <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
-          <!-- Optional subject to help your inbox -->
+
+          <!-- Optional subject -->
           <input type="hidden" name="_subject" value="New inquiry from portfolio site" />
           
+          <!-- Buttons -->
           <div style="display:flex;gap:8px;align-items:center">
             <button type="submit" class="cta" id="submitBtn">Send message</button>
-            <button type="button" id="dmUpwork" style="background:transparent;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);padding:10px;border-radius:10px;color:var(--text)">View Upwork</button>
+            <a href="https://www.upwork.com/freelancers/~yourprofile" target="_blank" id="dmUpwork" style="background:transparent;border:1px solid color-mix(in oklab,var(--muted),transparent 82%);padding:10px;border-radius:10px;color:var(--text);text-decoration:none">View Upwork</a>
           </div>
           
           <div id="formStatus" style="color:var(--muted);display:none" aria-live="polite"></div>
         </div>
       </form>
     </div>
+
     <!-- Side Card -->
     <aside class="card" style="min-width:260px;flex:0 0 320px;margin-top:60px">
       <h3>Prefer Upwork?</h3>
